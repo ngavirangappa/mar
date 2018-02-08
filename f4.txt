@@ -1,2 +1,8 @@
 100
+<<<<<<< HEAD
 changing from master
+=======
+Changing from b1
+>>>>>>> b1
+
+
