@@ -1,0 +1,147 @@
+Master - 
+Minions - workers node 
+
+Only set up K8S supports is  - Multiple node set up 
+No Multi manager setup
+
+HArd way of setting up : -
+SMART way of setting up
+
+Manage the components in K8s nut swarm manages all 
+
+COMPONENTS :
+1 API Server - front end component , gate keeper of the application 
+It way be any kind of request user, service etc
+it runs only on the master node 
+2 etcd
+responsible to store [sha256 json ] managements  encrypted key at the time of creating the component.
+it runs only on the master node 
+3 kubelt
+- The 1 & only component which is not supported by any smart utility tools
+- kubelet is a agent component in K8s 
+- Nodes heart beat signal provided to components 
+- Container  advise is a part of kubelet
+- Components fails its responsible to notify & status of each nodes including  the master 
+4 container runtime component
+   like Docker , CRI-O , RKT containers 
+5 controller 
+- responsible for where the app container should be placed 
+- responsible to make the decisions
+- eraser the key and send the scheduler 
+6 Scheduler 
+
+7 kube-proxy 
+	- responsible to  do proxy / by pass 
+	- N/w 3rd party solution will be provided 
+	- N/w management components responsible for private and public communication 
+
+Each components are talk via KUBE-APISERVER 
+
+8 CLOUD CONTROLLER Manager 
+- Replica of Kube-COntroller 
+- But cloud controller replica will be on different cloud providers 
+---------------------------------------'
+Minikube - single node cluster & only one node 
+MiniAdmn - 
+
+
+kubectl run hello-minikube
+kubectl cluster-info
+kubectl get nodes
+
+----------LAB----PORT - 6443-----------
+kuveadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.111.130 
+
+[Contianer N/w or POD N/w - CIDR ]
+
+watch docker images - to see 
+
+
+
+INFRASTRTURE : --- 
+============== 
+POD:
+-POD is the smaller objects 
+- carry the container 
+-Single instance of an application 
+-PODS are encapsulated via smaller OBJECTS ()
+-2 container of-same image in a single POD
+- Single POD have single container 
+- POD goes down then ? 2nd layer is there called replicaSet  
+ReplicaSet will do - Maintain HA ,  Reliability , scalability and load balancing  
+- Deployment Layer - it carry replica and POD layer , Upgrade strategy(rolling fashion) 
+
+#kubectl run venu --image=nginx
+[Spin up Venu POD ]
+#kubectl get pods -o wide
+#kubecl describe pod venu
+[detailed infor of a POD ]
+
+#kubectl delete pod venu
+[to delete the POD ]
+
+To create the POD, replica, deployment set while spinning up the container/POD
+#kubectl create deployment siva --replicas=2 --image=nginx
+#kubectl get deployment 
+#kubectl get replicaset
+#kubectl get pod -o wide
+
+#kubectl get all -o wide 
+
+[how to increase the replica ]
+#kubctl scale deployment.apps/siva --replicas=0]
+
+to delete the applciation 
+
+#kubectl delete deployment.apps/siva
+
+-----YAML In Kubernetes---------------------
+ POD - V1
+ Service - V1
+ ReplicaSet - apps/V1
+ Deployment - apps/V1
+ 
+Service Objects 
+1. LB - load balance service type ()
+2. NP - Node port  service port  (POD to external )
+3. CIP - Cluster IP service Port  (POD to POD )
+
+
+kubeadm join 192.168.111.130:6443 --token wwf6rb.q8u1po39ohpykqa9 --discovery-token-ca-cert-hash sha256:b49239d95b23216428e9445bfc10b2ebfdb35a588da0c2f6ddbfd5
+
+
+kubectl get pod test
+kubectl get nodes
+kubectl get replicaset
+kubectl get pod
+
+
+[root@Master ~]# kubectl get all
+[root@Master ~]# kubectl get all -o wide
+NAME                        READY   STATUS    RESTARTS   AGE   IP           NODE      NOMINATED NODE   READINESS GATES
+pod/mark-57f5ff9479-5t7wj   1/1     Running   0          15m   10.244.1.4   worker1   <none>           <none>
+pod/mark-57f5ff9479-9w528   1/1     Running   0          15m   10.244.2.3   worker2   <none>           <none>
+pod/test                    1/1     Running   0          20m   10.244.1.2   worker1   <none>           <none>
+
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE   SELECTOR
+service/kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP        27m   <none>
+service/mark         NodePort    10.98.43.233   <none>        80:31894/TCP   10m   app=mark
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES   SELECTOR
+deployment.apps/mark   2/2     2            2           15m   nginx        nginx    app=mark
+
+NAME                              DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES   SELECTOR
+replicaset.apps/mark-57f5ff9479   2         2         2       15m   nginx        nginx    app=mark,pod-template-hash=57f5ff9479
+
+
+http://192.168.111.130:31894/  - u should be able to access this 
+
+====hot fix ===========
+
+rpm -qa kubelet 
+docker images 
+docker ps
+kubeadm reset
+rm -rf /etc/kubernetes 
+
+iptables -F

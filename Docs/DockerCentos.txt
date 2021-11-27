@@ -1,0 +1,38 @@
+Pre-Requiste:
+===============
+
+1.vi /etc/hosts
+ ipaddress hostname
+
+2.yum update -y
+3.systemctl disable firewalld
+systemctl stop  firewalld
+iptables -L
+iptables -F
+4.getenforce
+vi /etc/selinux/config
+	SELINUX=disabled
+5.yum install net-tools -y
+6.yum install bind-utils -y
+7.yum install wget -y
+
+Docker-CE install:
+===================
+yum remove docker docker-common docker-selinux docker-engine
+yum install -y yum-utils device-mapper-persistent-data lvm2
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum list docker-ce --showduplicates | sort -r
+yum install -y docker-ce (latest version)
+	or
+yum install -y docker-ce-20.10.6-3.el7 (specific version)
+systemctl enable docker
+systemctl start docker
+systemctl status docker
+poweroff
+
+====================
+
+do 2 full clones as worker1 & worker2
+
+=======================
+

@@ -1,0 +1,64 @@
+
+CENTOS
+======
+https://stackoverflow.com/questions/27512926/how-to-configure-docker-default-bridge-work-with-unusual-network-configuration 
+
+yum install bridge-utils -y
+systemctl stop docker
+ip link set docker0 down
+brctl delbr docker0
+2. Create the bridge
+$ ip link add bridge0 type bridge
+$ ip addr add 192.148.0.1/20 dev bridge0
+$ ip link set bridge0 up
+
+To make it persisitant use the below file
+===============================================
+To make it persistant in Centos/Redhat:
+
+vi /etc/sysconfig/network-scripts/ifcfg-bridge0
+TYPE=Bridge
+DEVICE=bridge0
+NETMASK=255.255.252.0
+IPADDR=192.148.0.1
+ONBOOT=yes
+BOOTPROTO=none
+NM_CONTROLLED=no
+DELAY=0
+
+================================================
+
+
+3. Update the Docker daemon to use the bridge
+$ vi /etc/docker/daemon.json
+   { "bridge": "bridge0" }
+4. Restart Docker
+systemctl start docker
+5. reboot the docker host and check docker0 is appearing 
+
+
+6. iptables -t nat -L
+
+7. docker run -it --name abc  busybox sh
+
+
+
+
+to delete bridge:
+------------------
+
+systemctl stop docker
+ip link set bridge0 down
+rm /etc/docker/daemon.json
+rm /etc/sysconfig/network-scripts/ifcfg-bridge0
+brctl show
+brctl delbr bridge0
+brtcl show
+systemctl start docker
+ip a
+===================================================================
+docker network create --driver=bridge --subnet=192.158.10.0/24 india0
+docker run -itd --network india0 --name=test busybox
+
+docker network connect india1 test 
+docker network disconnect india1 test 

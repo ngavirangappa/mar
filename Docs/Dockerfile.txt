@@ -1,0 +1,16 @@
+FROM centos:latest
+MAINTAINER naveen.ec10@gmail.com
+RUN yum update -y && yum install httpd -y
+CMD ["apachectl","-D","FOREGROUND"]
+EXPOSE 80
+
+
+==================
+
+
+docker build -t webserver:v1 .
+docker images
+docker run -itd --name webtest -p 8087:80 webserver:v1
+docker ps
+ip a
+curl http://192.168.37.135:8087

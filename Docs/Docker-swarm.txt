@@ -1,0 +1,46 @@
+PreRequisites
+=============
+1. Since you have done a clone ,Change the hostname on worker1 and worker2 - hostnamectl set-hostname worker#
+2. Add /etc/hosts entry for hostname resolution on all nodes with all entries
+3. Ping the nodes with hostnames
+4. Check docker software is installed and running. - (systemctl status docker)
+
+In Unix 
+=======
+$ docker swarm init (OR) docker swarm init --advertise-addr <IPaddress or Domain name>  
+Swarm initialized: current node (1ex3...o3px) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+docker swarm join --token SWMTKN-1-0hz2ec...2vye 172.31.1.5:2377
+
+Run the next command on node2.
+$ docker swarm join --token SWMTKN-1-0hz2ec...2vye 172.31.1.5:2377
+This node joined a swarm as a worker.
+
+docker node ls
+docker service create --replicas 2 -p 80:80 --name web nginx
+docker service ls
+docker service scale web=3
+docker swarm join-token worker
+docker service ps web
+docker node promote worker1
+docker node demote worker1
+docker node update --availability drain Master
+docker node update --availability active Master
+docker swarm leave
+docker node rm nodename
+
+Rolling update:
+---------------
+docker service update --image nginx:1.9.1 web
+docker service rollback web
+docker service ps -f "desired-state=Running" web
+watch docker service ps web
+
+To leave the swarm from leader:
+docker swarm leave --force
+
+
+=======================================================================================
+swarmpit
